@@ -1,0 +1,57 @@
+@model Bookstore.Web.ViewModel.Address.AddressCreateUpdateViewModel
+
+@{
+    ViewData["Title"] = "Edit";
+}
+
+<div class="panel-body">
+    <h1>Create / Update Address</h1>
+    <br />
+
+    <form asp-action="CreateUpdate" method="post">
+        <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+
+        <div class="form-group">
+            <label asp-for="AddressLine1">Address Line 1</label>
+            <input asp-for="AddressLine1" class="form-control" />
+            <span asp-validation-for="AddressLine1" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="AddressLine2">Address Line 2</label>
+            <input asp-for="AddressLine2" class="form-control" />
+            <span asp-validation-for="AddressLine2" class="text-danger"></span>
+        </div>
+
+        <div class="form-group">
+            <label asp-for="City">City</label>
+            <input asp-for="City" class="form-control" />
+            <span asp-validation-for="City" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="State">State</label>
+            <select asp-for="State" asp-items="Model.States" class="form-control"></select>
+            <span asp-validation-for="State" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="Country">Country</label>
+            <input asp-for="Country" class="form-control" />
+            <span asp-validation-for="Country" class="text-danger"></span>
+        </div>
+        <div class="form-group">
+            <label asp-for="ZipCode">Zipcode</label>
+            <input asp-for="ZipCode" class="form-control" />
+            <span asp-validation-for="ZipCode" class="text-danger"></span>
+        </div>
+
+        <center>
+            <div class="form-group">
+                <input type="submit" value="Save" class="btn" />
+                <a class="btn" href="@Model.ReturnUrl">Cancel</a>
+            </div>
+        </center>
+    </form>
+</div>
+
+@section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+}

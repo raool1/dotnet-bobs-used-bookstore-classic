@@ -1,0 +1,134 @@
+@using Bookstore.Domain.Offers;
+@using Bookstore.Domain;
+
+@model Bookstore.Web.Areas.Admin.Models.Offers.OfferIndexViewModel
+
+@{ ViewData["Title"] = "Offers"; }
+
+<partial name="_MessageBanner" />
+
+<div class="d-flex m-3">
+    <h5 class="me-auto">Offers</h5>
+</div>
+
+<div class="card mx-3">
+    <div class="card-body">
+        <form class="row row-cols-lg-auto g-3 align-items-center" method="get">
+            <div class="col-12">
+                <label class="visually-hidden" for="NameFilterInput">Book name</label>
+                <input asp-for="Filters.BookName" placeholder="Book Name" class="form-control" id="NameFilterInput" />
+            </div>
+
+            <div class="col-12">
+                <label class="visually-hidden" for="AuthorFilterInput">Author</label>
+                <input asp-for="Filters.Author" placeholder="Author" class="form-control" id="AuthorFilterInput" />
+            </div>
+
+            <div class="col-12">
+                <label class="visually-hidden" for="GenreFilter">Genre</label>
+                <select asp-for="Filters.GenreId" asp-items="Model.Genres" class="form-select">
+                    <option value="">All Genres</option>
+                </select>
+            </div>
+
+            <div class="col-12">
+                <label class="visually-hidden" for="ConditionFilter">Condition</label>
+                <select asp-for="Filters.ConditionId" asp-items="Model.BookConditions" class="form-select">
+                    <option value="">All Book Conditions</option>
+                </select>
+            </div>
+
+            <div class="col-12">
+                <label class="visually-hidden" for="OfferStatusSelect">Offer status</label>
+                <select asp-for="Filters.OfferStatus" asp-items="Html.GetEnumSelectList<OfferStatus>()" class="form-select">
+                    <option value="">All Offer Statuses</option>
+                </select>
+            </div>
+            <div class="col-12">
+                <button type="submit" class="btn btn-primary">Filter</button>
+            </div>
+
+            <div class="col-12">
+                <a asp-action="Index" asp-controller="Offers" class="btn btn-secondary">Clear</a>
+            </div>
+        </form>
+    </div>
+</div>
+
+<div class="card m-3">
+    <div class="card-header">
+        <div class="d-flex justify-content-end">
+            <partial name="_Paginator" model="Model" />
+        </div>
+    </div>
+
+    <div class="card-body">
+        <table class="table table-striped table-hover ">
+            <thead>
+                <tr>
+                    <th scope="col">Customer</th>
+                    <th scope="col">Book Name</th>
+                    <th scope="col">Author</th>
+                    <th scope="col">Genre</th>
+                    <th scope="col">Condition</th>
+                    <th scope="col">Price</th>
+                    <th scope="col">Offer date</th>
+                    <th scope="col">Status</th>
+                    <th scope="col"></th>
+                </tr>
+            </thead>
+            @foreach (var offer in Model.Items)
+            {
+                <tr>
+                    <td>@offer.CustomerName</td>
+                    <td>@offer.BookName</td>
+                    <td>@offer.Author</td>
+                    <td>@offer.Genre</td>
+                    <td>@offer.Condition</td>
+                    <td>@offer.OfferPrice.ToString("C")</td>
+                    <td>@offer.OfferDate.ToShortDateString()</td>
+                    <td>@offer.OfferStatus.GetDescription()</td>
+                    <td>
+                        <form method="post">
+                            @switch (offer.OfferStatus)
+                            {
+                                case OfferStatus.PendingApproval:
+                                    <div class="hstack gap-2">
+
+
+
+                                        <button type="submit" class="btn btn-link p-0" formaction="@($"/Admin/Offers/ApproveAsync/{offer.OfferId}")">Approve</button>
+
+                                        <div class="vr"></div>
+
+                                        <button type="submit" class="btn btn-link p-0" formaction="@($"/Admin/Offers/RejectAsync/{offer.OfferId}")">Reject</button>
+
+                                    </div>
+
+                                    break;
+
+                                case OfferStatus.Approved:
+
+                                    <button type="submit" class="btn btn-link p-0" formaction="@($"/Admin/Offers/ReceivedAsync/{offer.OfferId}")">Confirm Shipment</button>
+
+                                    break;
+
+                                case OfferStatus.Received:
+
+                                    <button type="submit" class="btn btn-link p-0" formaction="@($"/Admin/Offers/PaidAsync/{offer.OfferId}")">Make Payment</button>
+
+                                    break;
+                            }
+                        </form>
+                    </td>
+                </tr>
+            }
+        </table>
+    </div>
+
+    <div class="card-footer">
+        <div class="d-flex justify-content-end">
+            <partial name="_Paginator" model="Model" />
+        </div>
+    </div>
+</div>

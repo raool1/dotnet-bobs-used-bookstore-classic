@@ -1,0 +1,149 @@
+@using Bookstore.Domain.ReferenceData
+
+@model Bookstore.Web.Areas.Admin.Models.Inventory.InventoryCreateUpdateViewModel
+
+<div class="d-flex m-3">
+    <h5 class="me-auto">Create / Update Book</h5>
+</div>
+
+<form enctype="multipart/form-data" method="post" novalidate>
+    <div asp-validation-summary="ModelOnly"></div>
+
+    <input type="hidden" asp-for="Id" />
+
+    <div class="row justify-content-center">
+        <div class="col-4">
+            <div class="mb-3">
+                <label class="form-label" asp-for="Name">Name</label>
+                <input asp-for="Name" class="form-control" id="NameInput" placeholder="Book name" />
+                <small><span asp-validation-for="Name" class="text-danger"></span></small>
+            </div>            
+
+            <div class="mb-3">
+                <label class="form-label" asp-for="Author">Author</label>
+                <input asp-for="Author" class="form-control" id="AuthorInput" placeholder="Author" />
+                <small><span asp-validation-for="Author" class="text-danger"></span></small>
+            </div>
+            
+            <div class="mb-3">
+                <label class="form-label" asp-for="ISBN">ISBN</label>
+                <input asp-for="ISBN" class="form-control" id="IsbnInput" placeholder="ISBN" />
+                <small><span asp-validation-for="ISBN" class="text-danger"></span></small>
+            </div>
+            
+            <div class="row">
+                <div class="col">
+                    <label class="form-label" asp-for="Price">Price</label>
+                    <input asp-for="Price" class="form-control" id="PriceInput" placeholder="Price" step="0.01" type="number" />
+                    <small><span asp-validation-for="Price" class="text-danger"></span></small>
+                </div>
+
+                <div class="col">
+                    <label class="form-label" asp-for="Quantity">Quantity</label>
+                    <input asp-for="Quantity" class="form-control" id="QuantityInput" placeholder="Quantity" type="number" />
+                    <small><span asp-validation-for="Price" class="text-danger"></span></small>
+                </div>
+            </div>
+
+            <div class="mb-3">
+                <label class="form-label" asp-for="Summary">Summary</label>
+                <textarea asp-for="Summary" class="form-control" rows="4" placeholder="Summary"></textarea>
+            </div>
+        </div>
+
+        <div class="col-4">
+            <div class="row">
+                <div class="mb-3">
+                    <label class="form-label" for="PublisherSelect">Publisher</label>
+                    <div class="input-group">
+                        <select asp-for="SelectedPublisherId" asp-items="Model.Publishers" class="form-select">
+                            <option value="">Select the Publisher</option>
+                        </select>
+                        <a asp-action="Create" asp-controller="ReferenceData" asp-route-selectedReferenceDataType="@ReferenceDataType.Publisher" class="btn btn-outline-primary">Add</a>
+                    </div>
+                    <small><span asp-validation-for="SelectedPublisherId" class="text-danger"></span></small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="GenreSelect">Genre</label>
+                    <div class="input-group">
+                        <select asp-for="SelectedGenreId" asp-items="Model.Genres" class="form-select">
+                            <option value="">Select the Genre</option>
+                        </select>
+                        <a asp-action="Create" asp-controller="ReferenceData" asp-route-selectedReferenceDataType="@ReferenceDataType.Genre" class="btn btn-outline-primary">Add</a>
+                    </div>
+                    <small><span asp-validation-for="SelectedGenreId" class="text-danger"></span></small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="BookTypeSelect">Book Type</label>
+                    <div class="input-group">
+                        <select asp-for="SelectedBookTypeId" asp-items="Model.BookTypes" class="form-select">
+                            <option value="">Select the type</option>
+                        </select>
+                        <a asp-action="Create" asp-controller="ReferenceData" asp-route-selectedReferenceDataType="@ReferenceDataType.BookType" class="btn btn-outline-primary">Add</a>
+                    </div>
+                    <small><span asp-validation-for="SelectedBookTypeId" class="text-danger"></span></small>
+                </div>
+
+                <div class="mb-3">
+                    <label class="form-label" for="ConditionSelect">Condition</label>
+
+
+                    <div class="input-group">
+                        <select asp-for="SelectedConditionId" asp-items="Model.BookConditions" class="form-select">
+                            <option value="">Select the condition</option>
+                        </select>
+                        <a asp-action="Create" asp-controller="ReferenceData" asp-route-selectedReferenceDataType="@ReferenceDataType.Condition" class="btn btn-outline-primary">Add</a>
+                    </div>
+                    <small><span asp-validation-for="SelectedConditionId" class="text-danger"></span></small>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-8">
+            <div class="mb-3">
+
+                <label class="form-label">Cover Image</label>                               
+                <input asp-for="CoverImage" class="form-control mb-3" type="file" accept=".png,.jpg,.jpeg" />
+                <span asp-validation-for="CoverImage" class="text-danger"></span>
+                
+                <img src="@Model.CoverImageUrl" class="img-thumbnail @(string.IsNullOrWhiteSpace(Model.CoverImageUrl) ? "d-none" : "")" />
+            </div>
+        </div>
+    </div>
+
+    <div class="row justify-content-center">
+        <div class="col-8 d-grid gap-2 d-md-block">
+            <button class="btn btn-primary" type="submit">Save</button>
+            <a asp-action="Index" asp-controller="Inventory" class="btn btn-secondary">Back</a>
+        </div>
+    </div>
+</form>
+
+@section Scripts{
+    <script type="text/javascript">
+        $(function () {
+            $("input:file").change(function () {
+                readUrl(this);
+            });
+        });
+
+        function readUrl(input) {
+            var reader = new FileReader();
+
+            reader.onload = function (e) {
+                $(input)
+                    .next("img")
+                    .attr("src", e.target.result)
+                    .removeClass("d-none");
+            }
+
+            reader.readAsDataURL(input.files[0]);
+        }
+    </script>
+
+    <partial name="_ValidationScriptsPartial" />
+}

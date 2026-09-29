@@ -1,0 +1,9 @@
+<span class="navbar-text me-2">
+    Hello @User.Identity?.Name!
+</span>
+
+<div class="hstack gap-2">
+    <a asp-action="Index" asp-controller="Home" asp-area="" class="nav-link">Customer Portal</a>
+    <div class="vr"></div>
+    <a asp-action="LogOut" asp-controller="Authentication" asp-area="" class="nav-link">Logout</a>
+</div>
