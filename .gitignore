@@ -1,0 +1,8 @@
+
+# Local / build output
+.vs/
+bin/
+obj/
+packages/
+app/Bookstore.Web/roslyn/
+*.user

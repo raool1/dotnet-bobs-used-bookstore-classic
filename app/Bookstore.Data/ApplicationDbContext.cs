@@ -79,6 +79,15 @@ namespace Bookstore.Data
                 new { Id = 23, DataType = ReferenceDataType.Publisher, Text = "Paradigm Publishing" },
                 new { Id = 24, DataType = ReferenceDataType.Publisher, Text = "Aurora Publishing" }
             );
+            var seedDate = new DateTime(2024, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+            foreach (var entityType in modelBuilder.Model.GetEntityTypes()
+                         .Where(t => typeof(Bookstore.Domain.Entity).IsAssignableFrom(t.ClrType)))
+            {
+                var entity = modelBuilder.Entity(entityType.ClrType);
+                entity.Property(nameof(Bookstore.Domain.Entity.CreatedOn)).HasDefaultValue(seedDate);
+                entity.Property(nameof(Bookstore.Domain.Entity.UpdatedOn)).HasDefaultValue(seedDate);
+                entity.Property(nameof(Bookstore.Domain.Entity.CreatedBy)).HasDefaultValue("System");
+            }
 
             modelBuilder.Entity<Book>().HasData(
                 new { Id = 1, Name = "2020: The Apocalypse", Author = "Li Juan", ISBN = "6556784356", PublisherId = 15, BookTypeId = 1, GenreId = 13, ConditionId = 5, Price = 10.95M, Quantity = 25, Year = (int?)null, Summary = (string)null, CoverImageUrl = "/Content/Images/coverimages/apocalypse.png" },

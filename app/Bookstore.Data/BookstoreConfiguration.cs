@@ -18,9 +18,12 @@ namespace Bookstore.Data
         {
             // Load app settings from IConfiguration (appsettings.json, environment, etc.)
             var appSettingsSection = configuration.GetSection("AppSettings");
-            foreach (var child in appSettingsSection.GetChildren())
+            foreach (var kv in configuration.AsEnumerable())
             {
-                _appSettings[child.Key] = child.Value;
+                if (kv.Value != null)
+                {
+                    _appSettings[kv.Key] = kv.Value;
+                }
             }
 
             // Environment variables still override, preserving original behavior
@@ -48,12 +51,13 @@ namespace Bookstore.Data
 
         public string GetSetting(string key)
         {
-            return _appSettings[key];
+            if (_appSettings.TryGetValue(key, out var value)) return value;
+            return _appSettings[key.Replace('/', ':')];   // legacy "Services/X" -> "Services:X"
         }
 
         public T GetSetting<T>(string key)
         {
-            var value = _appSettings[key];
+            var value = GetSetting(key);
             return (T)Convert.ChangeType(value, typeof(T));
         }
 
